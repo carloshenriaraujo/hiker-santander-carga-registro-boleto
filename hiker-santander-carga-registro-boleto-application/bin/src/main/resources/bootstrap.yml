@@ -1,0 +1,35 @@
+# Spring properties
+server:
+  connection-timeout: 10000
+
+spring:
+  application:
+    name: hiker-santander-carga-registro-boleto
+
+---
+spring:
+  profiles: default
+  cloud:
+    config:
+      uri: http://ualbax-dev:30002
+
+---
+spring:
+  profiles: develop
+  cloud:
+    config:
+      uri: http://192.168.42.222:30002
+
+---
+spring:
+  profiles: homolog
+  cloud:
+    config:
+      uri: http://ualbax-hom:30002
+
+---
+spring:
+  profiles: prod
+  cloud:
+    config:
+      uri: http://ualbax-prod:30002 

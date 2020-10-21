@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Implementation-Title: hiker-santander-carga-registro-boleto-applicatio
+ n
+Implementation-Version: 2.0.0-SNAPSHOT
+Built-By: carlos
+Implementation-Vendor-Id: com.accesstage
+Build-Jdk: 1.8.0_171
+Implementation-URL: http://projects.spring.io/spring-boot/hiker-santan
+ der-carga-registro-boleto/hiker-santander-carga-registro-boleto-appli
+ cation/
+Created-By: Maven Integration for Eclipse
+Implementation-Vendor: Pivotal Software, Inc.
+

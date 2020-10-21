@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.accesstage</groupId>
+    <artifactId>hiker-santander-carga-registro-boleto</artifactId>
+    <packaging>pom</packaging>
+    <version>2.0.0-SNAPSHOT</version>
+
+    <modules>
+        <module>hiker-santander-carga-registro-boleto-model</module>
+        <module>hiker-santander-carga-registro-boleto-repository</module>
+        <module>hiker-santander-carga-registro-boleto-service</module>
+        <module>hiker-santander-carga-registro-boleto-api</module>
+        <module>hiker-santander-carga-registro-boleto-application</module>
+    </modules>
+
+    <properties>
+        <!-- JAVA VERSION -->
+        <java.version>1.8</java.version>
+        <!-- SPRING BOOT VERSION -->
+        <spring-boot.version>1.5.3.RELEASE</spring-boot.version>
+        <!-- SPRING CLOUD VERSION -->
+        <spring-cloud.version>Dalston.SR2</spring-cloud.version>
+        <!-- LOMBOK VERSION -->
+        <lombok.version>1.16.10</lombok.version>
+        <!-- MAVEN COMPILER PLUGIN VERSION -->
+        <maven-compiler-plugin.version>3.6.0</maven-compiler-plugin.version>
+        <!-- MAVEN RELEASE PLUGIN VERSION -->
+        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <!-- DOCKER AND KUBERNETES YAML GENERATOR PLUGIN VERSION -->
+        <docker-maven-plugin.version>3.5.26</docker-maven-plugin.version>
+        <!-- LOGBACK GELF APPENDER -->
+        <logback-gelf.version>2.0.1</logback-gelf.version>
+        <!-- HIKER FNX REG EVENT CLIENT -->
+        <!-- HIKER FNX REG EVENT CLIENT -->
+        <hiker-fnx-reg-event-client.version>2.0.0</hiker-fnx-reg-event-client.version>
+        
+        <!-- HIKER COMPONENT COMMONS -->
+        <hiker-comp-commons.version>2.0.12</hiker-comp-commons.version>
+ 		<!-- SPRING BTACH INFRA -->
+        <spring-batch-infrastructure>3.0.8.RELEASE</spring-batch-infrastructure>
+ 		<!-- JAVAX MAIL -->
+        <!--<javax-mail-version>1.4</javax-mail-version>-->
+ 		<!-- MAIL -->
+        <!--<send-mail-version>1.0</send-mail-version>-->
+		<swagger-annotations.version>1.5.10</swagger-annotations.version>
+		<springfox-swagger2.version>2.6.1</springfox-swagger2.version>        
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.3.RELEASE</version>
+    </parent>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- INTERNAL -->
+            <dependency>
+                <groupId>com.accesstage</groupId>
+                <artifactId>hiker-santander-carga-registro-boleto-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.accesstage</groupId>
+                <artifactId>hiker-santander-carga-registro-boleto-repository</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.accesstage</groupId>
+                <artifactId>hiker-santander-carga-registro-boleto-service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.accesstage</groupId>
+                <artifactId>hiker-santander-carga-registro-boleto-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- BOM -->
+            <!-- SPRING -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- EXTERNAL -->
+            <!-- LOMBOK -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+			<!-- SWAGGER -->
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>${springfox-swagger2.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>${springfox-swagger2.version}</version>
+				<scope>compile</scope>
+			</dependency>            
+            <!-- HIKER COMPONENT COMMONS -->
+            <dependency>
+                <groupId>com.accesstage</groupId>
+                <artifactId>hiker-comp-commons-assembly</artifactId>
+                <version>${hiker-comp-commons.version}</version>
+            </dependency>
+            <!-- OJDBC6 -->
+            <dependency>
+                <groupId>oracle</groupId>
+                <artifactId>ojdbc6</artifactId>
+                <version>${ojdbc6.version}</version>
+            </dependency>
+            <!-- LOGBACK GELF APPENDER -->
+            <dependency>
+                <groupId>com.accesstage</groupId>
+                <artifactId>logback-gelf</artifactId>
+                <version>${logback-gelf.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <dependencies>
+        <!-- EXTERNAL -->
+        <!-- SPRING -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>            
+        </dependency>
+
+		<dependency>
+		    <groupId>org.springframework.batch</groupId>
+		    <artifactId>spring-batch-infrastructure</artifactId>
+		    </dependency>
+
+		<dependency>
+		    <groupId>org.springframework.batch</groupId>
+		    <artifactId>spring-batch-core</artifactId>
+		</dependency>
+
+        <!-- LOMBOK -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- LOGBACK GELF APPENDER -->
+        <dependency>
+            <groupId>com.accesstage</groupId>
+            <artifactId>logback-gelf</artifactId>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-feign</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- SPRING BOOT-->
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring-boot.version}</version>
+                </plugin>
+                <!-- MAVEN COMPILER PLUGIN -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                </plugin>
+                <!-- DOCKER AND KUBERNETES YAML GENERATOR PLUGIN -->
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>fabric8-maven-plugin</artifactId>
+                    <version>${docker-maven-plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <plugins>
+            <!-- MAVEN COMPILER PLUGIN -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <!-- MAVEN RELEASE PLUGIN -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${maven-release-plugin.version}</version>
+                <configuration>
+                    <allowTimestampedSnapshots>true</allowTimestampedSnapshots>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <scm>
+        <!-- regular browsable URL -->
+        <url>http://gitlab.accesstage.com.br/hiker/hiker-santander-carga-registro-boleto/tree/master</url>
+        <!-- read access -->
+        <connection>scm:git:ssh://git@gitlab.accesstage.com.br:hiker/hiker-santander-carga-registro-boleto.git</connection>
+        <!-- write access -->
+        <developerConnection>scm:git:ssh://git@gitlab.accesstage.com.br/hiker/hiker-santander-carga-registro-boleto.git
+        </developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <name>releases</name>
+            <url>http://nexus.accesstage.com.br/nexus/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <name>snapshots</name>
+            <url>http://nexus.accesstage.com.br/nexus/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+</project>

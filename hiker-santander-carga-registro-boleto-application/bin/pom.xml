@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <artifactId>hiker-santander-carga-registro-boleto</artifactId>
+        <groupId>com.accesstage</groupId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>hiker-santander-carga-registro-boleto-application</artifactId>
+
+    <properties>
+        <registry.name>registryhom.accesstage.com.br:5000</registry.name>
+    </properties>
+
+    <dependencies>
+        <!-- INTERNAL -->
+        <dependency>
+            <groupId>com.accesstage</groupId>
+            <artifactId>hiker-santander-carga-registro-boleto-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.accesstage</groupId>
+            <artifactId>hiker-santander-carga-registro-boleto-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.accesstage</groupId>
+            <artifactId>hiker-santander-carga-registro-boleto-repository</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.accesstage</groupId>
+            <artifactId>hiker-santander-carga-registro-boleto-model</artifactId>
+        </dependency>
+
+        <!-- EXTERNAL -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+
+		<!-- SWAGGER -->
+          <dependency>
+              <groupId>io.springfox</groupId>
+              <artifactId>springfox-swagger2</artifactId>
+              <version>2.6.1</version>
+          </dependency>
+          <dependency>
+              <groupId>io.springfox</groupId>
+              <artifactId>springfox-swagger-ui</artifactId>
+              <version>2.6.1</version>
+              <scope>compile</scope>
+          </dependency>
+
+          <dependency>
+          	<groupId>org.springframework.boot</groupId>
+          	<artifactId>spring-boot-starter-amqp</artifactId>
+          </dependency>
+          
+		  <dependency>
+			  <groupId>org.springframework.boot</groupId>
+			  <artifactId>spring-boot-autoconfigure</artifactId>
+		  </dependency>          
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>io.fabric8</groupId>
+                <artifactId>fabric8-maven-plugin</artifactId>
+                <configuration>
+                    <skipBuild>false</skipBuild>
+                    <profile>minimal</profile>
+                    <autoPull>Always</autoPull>
+                    <verbose>true</verbose>
+                    <registry>${registry.name}</registry>
+                    <images>
+                        <image>
+                            <alias>${project.parent.artifactId}</alias>
+                            <name>${registry.name}/${project.parent.artifactId}:${project.version}</name>
+                            <build>
+                                <from>hiker-j8</from>
+                                <assembly>
+                                    <basedir>/deployments</basedir>
+                                    <descriptorRef>artifact-with-dependencies</descriptorRef>
+                                </assembly>
+                                <env>
+                                    <TZ>America/Sao_Paulo</TZ>
+                                </env>
+                                <runCmds>
+                                    <runCmd>apk update</runCmd>
+                                    <runCmd>apk add tzdata</runCmd>
+                                    <runCmd>ln -snf /usr/share/zoneinfo/$TZ /etc/localtime</runCmd>
+                                    <runCmd>echo $TZ > /etc/timezone</runCmd>
+                                </runCmds>
+                                <entryPoint>java -Xmx256m -Xms256m -Djava.security.egd=file:/dev/./urandom -jar /deployments/${project.build.finalName}.jar</entryPoint>
+                            </build>
+                        </image>
+                    </images>
+                    <enricher>
+                        <config>
+                            <fmp-controller>
+                                <pullPolicy>${image.pull.policy}</pullPolicy>
+                            </fmp-controller>
+                        </config>
+                    </enricher>
+                    <resources>
+                        <env>
+                            <SPRING_PROFILES_ACTIVE>${environment}</SPRING_PROFILES_ACTIVE>
+                        </env>
+                        <services>
+                            <service>
+                                <name>${project.parent.artifactId}</name>
+                                <expose>true</expose>
+                                <ports>
+                                    <port>
+                                        <protocol>tcp</protocol>
+                                        <port>8080</port>
+                                        <targetPort>8080</targetPort>
+                                        <nodePort>30191</nodePort>
+                                    </port>
+                                </ports>
+                                <type>NodePort</type>
+                            </service>
+                        </services>
+                    </resources>
+                </configuration>             
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>resource</goal>
+                        </goals>
+                    </execution>
+                </executions>               
+            </plugin>        
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>develop</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <environment>develop</environment>
+                <registry.name>registrydev.accesstage.com.br:5000</registry.name>
+                <image.pull.policy>Always</image.pull.policy>
+            </properties>
+        </profile>
+        <profile>
+            <id>homolog</id>
+            <properties>
+                <environment>homolog</environment>
+                <registry.name>registryhom.accesstage.com.br:5000</registry.name>
+                <image.pull.policy>IfNotPresent</image.pull.policy>
+            </properties>
+        </profile>
+        <profile>
+            <id>prod</id>
+            <properties>
+                <environment>prod</environment>
+                <registry.name>registryprd.accesstage.com.br:5000</registry.name>
+                <image.pull.policy>IfNotPresent</image.pull.policy>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>
